@@ -7,7 +7,7 @@ import Data.Complex
 main = do
     arg <- getArgs
     w <- getWAVEFile (head arg)
-    print (fft (head (plexifyList (waveToChan (getSamples w)))))
+    print (getMag (fft (head (plexifyList (waveToChan (getSamples w))))))
 
 getSamples :: WAVE -> WAVESamples
 getSamples (WAVE _ w) = w
@@ -26,6 +26,10 @@ waveToDoubles (f:fs) = (frameToDoubles f):(waveToDoubles fs)
 frameToDoubles :: [WAVESample] -> [Double]
 frameToDoubles [] = []
 frameToDoubles (s:ss) = (sampleToDouble s):(frameToDoubles ss)
+
+--mag = sqrt(re^2 + im^2)
+getMag :: [Complex Double] -> [Double]
+getMag ds = map (\d -> sqrt(((realPart d)^2)+((imagPart d)^2))) ds
 
 toComplex :: Double -> Complex Double
 toComplex x = x :+ 0

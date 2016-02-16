@@ -8,14 +8,10 @@ import Data.List
 main = do
     arg <- getArgs
     w <- getWAVEFile (head arg)
-    print (getFund (getMag (fft (head (plexifyList (waveToChan (getSamples w)))))))
+    putStr (fftToStr (getMag (fft (head (plexifyList (waveToChan (getSamples w)))))))
  --   print (headerToString (getHeader w))
 getSamples :: WAVE -> WAVESamples
 getSamples (WAVE _ w) = w
-
-largest :: [Double] -> Double
-largest [] = 0
-largest (head : tail) = max head (largest tail)
 
 --returns [[L0,L1...Ln],[R0,R1...Rn]]
 waveToChan :: WAVESamples -> [[Double]]
@@ -42,11 +38,20 @@ toComplex x = x :+ 0
 plexifyList :: [[Double]] -> [[Complex Double]]
 plexifyList xs = (toComplex <$>) <$> xs
 
+freqToMag :: Double -> [Double] -> Double
+freqToMag f fft = fft !! (round (f * n / fs))
+    where n =  fromIntegral (length fft)
+          fs = 44100 
+
 getFund :: [Double] -> Maybe Double
 getFund ds = (*t) <$> i
     where n = length ds
           i = fromIntegral <$> elemIndex (maximum ds) ds
           t = 44100 / (fromIntegral n)
+
+fftToStr :: [Double] -> String
+fftToStr fft = foldr (\d a -> (show d)++"\n"++a) [] list
+    where list = [freqToMag x fft | x <- [100,200..20000]]
 
 getHeader :: WAVE -> WAVEHeader
 getHeader (WAVE h _) = h

@@ -5,11 +5,16 @@ import Data.List.Split (splitOn)
 import Data.Complex
 import Data.List
 import Data.List.Split
+import System.IO     
 
 main = do
     arg <- getArgs
     w <- getWAVEFile (head arg)
-    print (getBandMag 200 (getMag (fft (head (plexifyList (waveToChan (getSamples w)))))))
+    writeFile "mono440.txt" (toPrint (getBandMag 200 (getMag (fft (head (plexifyList (waveToChan (getSamples w))))))))
+
+--puts list of doubles as strings separated by commas
+toPrint :: [Double] -> String
+toPrint ds = foldr (\d a -> (show d) ++ "," ++ a) [] ds
 
 getSamples :: WAVE -> WAVESamples
 getSamples (WAVE _ w) = w

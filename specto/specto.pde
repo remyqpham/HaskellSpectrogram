@@ -5,14 +5,13 @@ void setup (){
  int cellH = 2;  //cell height 
  int freqBins = 200; //number of frequency bins
  int timeBins = 1;  //numer of time bins
- size(cellW*timeBins, cellH*freqBins);
+ size(cellW*timeBins, cellH*freqBins); //set size of specto
  background(255);
- String[] lines = loadStrings("mono1000.txt");
+ String[] lines = loadStrings("mono1000.txt"); //loads the file
 //iterate through each time bin
-for(int i =0;i<lines.length;i++){
+for(int i =0;i<timeBins;i++){
   String myLine = lines[i];
   String[] num = split(myLine, ',');
-  println(num.length);
   //iterate through each frequency bin
   for(int j = 0;j<freqBins;j++){
     println(j);

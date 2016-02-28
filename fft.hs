@@ -10,7 +10,7 @@ import System.IO
 main = do
     arg <- getArgs
     w <- getWAVEFile (head arg)
-    writeFile "mono440.txt" (toPrint (getBandMag 200 (getMag (fft (head (plexifyList (waveToChan (getSamples w))))))))
+    writeFile "sample.txt" (toPrint (getBandMag 200 (getMag (fft (head (plexifyList (waveToChan (getSamples w))))))))
 
 --puts list of doubles as strings separated by commas
 toPrint :: [Double] -> String

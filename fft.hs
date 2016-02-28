@@ -10,7 +10,7 @@ import System.IO
 main = do
     arg <- getArgs
     w <- getWAVEFile (head arg)
-    writeFile "sample.txt" (toPrint (getBandMag 200 (getMag (fft (head (plexifyList (waveToChan (getSamples w))))))))
+    writeFile "sample.txt" (toPrint (getBandMag 200 (getDB (fft (head (plexifyList (waveToChan (getSamples w))))))))
 
 --puts list of doubles as strings separated by commas
 toPrint :: [Double] -> String
@@ -34,9 +34,9 @@ frameToDoubles :: [WAVESample] -> [Double]
 frameToDoubles [] = []
 frameToDoubles (s:ss) = (sampleToDouble s):(frameToDoubles ss)
 
---mag = sqrt(re^2 + im^2)
-getMag :: [Complex Double] -> [Double]
-getMag ds = map (\d -> sqrt(((realPart d)^2)+((imagPart d)^2))) ds
+--DB = sqrt(re^2 + im^2)
+getDB :: [Complex Double] -> [Double]
+getDB ds = map (\d -> 10*(logBase 10 (sqrt(((realPart d)^2)+((imagPart d)^2))))) ds
 
 toComplex :: Double -> Complex Double
 toComplex x = x :+ 0

@@ -1,13 +1,13 @@
 
 
 void setup (){
- int cellW = 500; //cell width
+ int cellW = 50; //cell width
  int cellH = 2;  //cell height 
  int freqBins = 200; //number of frequency bins
- int timeBins = 1;  //numer of time bins
- size(500, 400); //set size of specto
+ int timeBins = 10;  //numer of time bins
+ size(550, 400); //set size of specto
  background(255);
- String[] lines = loadStrings("sample.txt"); //loads the file
+ String[] lines = loadStrings("test.txt"); //loads the file
 //iterate through each time bin
 for(int i =0;i<timeBins;i++){
   String myLine = lines[i];
@@ -27,5 +27,5 @@ for(int i =0;i<timeBins;i++){
 }
 
 float magToColor(float f){
- return f/200; 
+ return f/5; 
 }

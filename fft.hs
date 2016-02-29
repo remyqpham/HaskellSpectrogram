@@ -10,11 +10,12 @@ import System.IO
 main = do
     arg <- getArgs
     w <- getWAVEFile (head arg)
-    --writeFile "sample.txt" (toPrint (getBandMag 200 (getDB (fft (head (plexifyList (waveToChan (getSamples w))))))))
-    --print (getBinSize (getHeader w))
-    --print (length(fftBins (head (plexifyList (waveToChan (getSamples w)))) (getBinSize (getHeader w))))
-    --putStr (toPrint(map (\l -> getBandMag 200 l) (getDB (fftBins (head (plexifyList (waveToChan (getSamples w)))) (getBinSize (getHeader w))))))
-    writeFile "test.txt" (toPrint(map (\l -> getBandMag 200 l) (getDB (fftBins (head (plexifyList (waveToChan (getSamples w)))) (getBinSize (getHeader w))))))
+    writeFile "440to1000.txt" (toSpectro w 0 20 200)
+
+-- .wav -> channel -> timebins -> freqbins -> string
+toSpectro :: WAVE -> Int -> Int -> Int -> String
+toSpectro w i t f = (toPrint(map (\l -> getBandMag f l) (getDB (fftBins ((plexifyList (waveToChan (getSamples w))) !! i) (getBinSize (getHeader w) t)))))
+
 --puts list of doubles as strings separated by commas
 toPrintLine :: [Double] -> String
 toPrintLine ds = foldr (\d a -> (show d) ++ "," ++ a) [] ds
@@ -25,21 +26,15 @@ toPrint ls = foldr (\l a -> (toPrintLine l) ++ "\n" ++ a) [] ls
 getSamples :: WAVE -> WAVESamples
 getSamples (WAVE _ w) = w
 
---
 fftBins :: [Complex Double] ->Int -> [[Complex Double]]
 fftBins ds n = map fft (chunksOf n ds)
-
-
 
 convertToInt :: Maybe Int -> Int
 convertToInt Nothing = 0
 convertToInt (Just s) = s
 
-getBinSize :: WAVEHeader -> Int
-getBinSize (WAVEHeader _ _ _ f) = (convertToInt f) `div` 10
-
-
-
+getBinSize :: WAVEHeader -> Int -> Int
+getBinSize (WAVEHeader _ _ _ f) n = (convertToInt f) `div` n
 
 --returns [[L0,L1...Ln],[R0,R1...Rn]]
 waveToChan :: WAVESamples -> [[Double]]
@@ -59,10 +54,6 @@ frameToDoubles (s:ss) = (sampleToDouble s):(frameToDoubles ss)
 --DB = sqrt(re^2 + im^2)
 getDB :: [[Complex Double]] -> [[Double]]
 getDB ls = map (\ds -> (map (\d -> 10*(logBase 10 (sqrt(((realPart d)^2)+((imagPart d)^2))))) ds)) ls
-
---getDBs :: [[Complex Double]] -> [[Double]]
---getDBs ds = map (map (\d -> 10*(logBase 10 (sqrt(((realPart d)^2)+((imagPart d)^2)))))) ds
-
 
 toComplex :: Double -> Complex Double
 toComplex x = x :+ 0

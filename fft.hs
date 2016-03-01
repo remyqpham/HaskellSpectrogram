@@ -9,8 +9,8 @@ import System.IO
 
 main = do arg <- getArgs
           w <- getWAVEFile (head arg)
---          writeFile "piano.txt" (toSpectro w 0 100 200)
-          putStr (toSpectro w 0 100 200) 
+          writeFile "piano.txt" (toSpectro w 0 100 200)
+--          putStr (toSpectro w 0 100 200) 
 
 -- .wav -> channel -> timebins -> freqbins -> string
 toSpectro :: WAVE -> Int -> Int -> Int -> String
@@ -27,7 +27,7 @@ getSamples :: WAVE -> WAVESamples
 getSamples (WAVE _ w) = w
 
 fftBins :: [Complex Double] ->Int -> [[Complex Double]]
-fftBins ds n = map fft (chunksOf n ds)
+fftBins ds n = fst (splitAt 100 (map fft (chunksOf n ds)))
 
 convertToInt :: Maybe Int -> Int
 convertToInt Nothing = 0

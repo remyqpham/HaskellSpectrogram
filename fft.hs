@@ -7,10 +7,10 @@ import Data.List
 import Data.List.Split
 import System.IO     
 
-main = do
-    arg <- getArgs
-    w <- getWAVEFile (head arg)
-    writeFile "440to1000.txt" (toSpectro w 0 20 200)
+main = do arg <- getArgs
+          w <- getWAVEFile (head arg)
+--          writeFile "piano.txt" (toSpectro w 0 100 200)
+          putStr (toSpectro w 0 100 200) 
 
 -- .wav -> channel -> timebins -> freqbins -> string
 toSpectro :: WAVE -> Int -> Int -> Int -> String
@@ -51,8 +51,9 @@ frameToDoubles :: [WAVESample] -> [Double]
 frameToDoubles [] = []
 frameToDoubles (s:ss) = (sampleToDouble s):(frameToDoubles ss)
 
---DB = sqrt(re^2 + im^2)
+--DB =10*log10(sqrt(re^2 + im^2))
 getDB :: [[Complex Double]] -> [[Double]]
+--getDB ls = map (\ds -> (map (\d -> 10*(logBase 10 (sqrt((((realPart d)^2)+((imagPart d)^2))/(fromIntegral (length ds)))))) ds)) ls
 getDB ls = map (\ds -> (map (\d -> 10*(logBase 10 (sqrt(((realPart d)^2)+((imagPart d)^2))))) ds)) ls
 
 toComplex :: Double -> Complex Double
@@ -82,10 +83,6 @@ getFund ds = (*t) <$> i
     where n = length ds
           i = fromIntegral <$> elemIndex (maximum ds) ds
           t = 44100 / (fromIntegral n)
-
-fftToStr :: [Double] -> String
-fftToStr fft = foldr (\d a -> (show d)++"\n"++a) [] list
-    where list = [freqToMag x fft | x <- [100,200..20000]]
 
 getHeader :: WAVE -> WAVEHeader
 getHeader (WAVE h _) = h

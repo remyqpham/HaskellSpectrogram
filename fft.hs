@@ -1,3 +1,5 @@
+-- Anthony Assi, Chris Egan, Remy Pham
+-- Spectrogram
 import System.Environment
 import Data.WAVE
 import Data.Int (Int32)
@@ -9,7 +11,7 @@ import System.IO
 
 main = do arg <- getArgs
           w <- getWAVEFile (head arg)
-          writeFile "piano.txt" (toSpectro w 0 100 200)
+          writeFile "noise.txt" (toSpectro w 0 100 200)
 --          putStr (toSpectro w 0 100 200) 
 
 -- .wav -> channel -> timebins -> freqbins -> string
@@ -93,6 +95,7 @@ headerToString (WAVEHeader c fps bps f) = "Number of channels: "++ show c
     ++ show bps ++ "\nNumber of frames: " ++ show f ++ "\n"
 
 -- Cooley-Tukey
+-- Code taken from "rosettacode.org/wiki/Fast_Fourier_transform#Haskell"
 fft :: [Complex Double] -> [Complex Double]
 fft [] = []
 fft [x] = [x]

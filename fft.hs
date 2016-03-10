@@ -11,7 +11,7 @@ import System.IO
 
 main = do arg <- getArgs
           w <- getWAVEFile (head arg)
-          writeFile "bird.txt" (toSpectro w 0 100 200) 
+          writeFile "piano.txt" (toSpectro w 0 100 200) 
 
 -- Main function that takes in the args below and writes output data to file 
 -- .wav -> channel -> timebins -> freqbins -> string
